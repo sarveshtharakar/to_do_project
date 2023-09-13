@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My To-Do List</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>My To-Do List</h1>
+        <form method="POST" action="/add">
+            <input type="text" name="task" placeholder="Add a task" required>
+            <button type="submit">Add</button>
+        </form>
+        <ul>
+            {% for task in tasks %}
+                <li>
+                    <input type="checkbox" {% if task[2] %}checked{% endif %} onchange="completeTask({{ task[0] }})">
+                    {{ task[1] }}
+                    <button onclick="removeTask({{ task[0] }})">Complete</button>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <script>
+        function completeTask(taskId) {
+            fetch(`/complete/${taskId}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+            .then(response => {
+                if (response.redirected) {
+                    window.location.href = response.url;
+                }
+            });
+        }
+
+        function removeTask(taskId) {
+            fetch(`/complete/${taskId}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+            .then(response => {
+                if (response.redirected) {
+                    window.location.href = response.url;
+                }
+            });
+        }
+    </script>
+</body>
+</html>
